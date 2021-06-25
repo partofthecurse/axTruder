@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+<!-- asdf. -->
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Daniel Strohbach">
+  <meta name="description" content="ESP32 based Extruder Firmware - axTRUDER">
+  <title>axTruder Control</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="javascript.js"></script>
+
+</head>
+
+<body>
+  <div class="topnav" class="sticky">
+    <div id="left-column">
+      <p>
+
+      </p>
+    </div>
+    <div id="logo">
+      <h1>axTruder</h1>
+    </div>
+    <div class="measurements">
+      <p>
+        <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
+        <span class="nav-labels">Nozzle Soll</span>
+        <span id="nozzle-temperature-target">%NOZZLE_TEMPERATURE_SP%</span>
+        <sup class="units">&degC</sup>
+      </p>
+      <p>
+        <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
+        <span class="nav-labels">Nozzle Ist</span>
+        <span id="nozzle-temperature">%NOZZLE_TEMPERATURE%</span>
+        <sup class="units">&degC</sup>
+      </p>
+    </div>
+    <div id="spacer-vertical"></div>
+    <div class="measurements">
+      <p>
+        <i class="fas fa-ruler-vertical" style="color:#059e8a;"></i>
+        <span class="nav-labels">Durchmesser Soll</span>
+        <span id="diameter-target">%DIAMETER_SP%</span>
+        <sup class="units">&degC</sup>
+      </p>
+      <p>
+        <i class="fas fa-ruler-vertical" style="color:#059e8a;"></i>
+        <span class="nav-labels">Durchmesser Ist</span>
+        <span id="diameter">%DIAMETER%</span>
+        <sup class="units">&degC</sup>
+      </p>
+    </div>
+  </div>
+
+  <div id="left-column">
+    <p>
+
+    </p>
+  </div>
+  <div id="center-column">
+    <div id="inner-column-top">
+      <div id="top-left">
+        <h2>Presets</h2>
+        <span id="axTruderState">%AXTRUDERSTATE%</span>
+      </div>
+      <div id="top-right">
+        <p>
+
+        <table id="temperature-control" cellspacing="10">
+          <tbody>
+            <tr>
+              <th></th>
+              <th><span class="auger-control-label">Soll</span></th>
+              <th><span class="auger-control-label">Ist</span></th>
+              <th><span class="auger-control-label">Offset</span></th>
+            </tr>
+            <tr>
+              <th><span class="auger-control-label">Nozzle</span></th>
+
+              <td>
+                <form class="form-inline" style="margin:0">
+                  <button id="decrease-temp-button" type="button">-</button>
+                  <input type="number" name="tempInput" min="0" max="600" class="input-small" style="width: 30px"
+                    placeholder="%NOZZLE_TEMPERATURE_SP%" onchange="submitTemp()"></input>
+                  <span class="units">&degC</span>
+                  <button id="increase-temp-button" type="button">+</button>
+                  <button id="submit-temp-button" type="button">&#10003;</button>
+                </form>
+              </td>
+
+              <td><span id="nozzle-temperature">%NOZZLE_TEMPERATURE%</span></td>
+
+              <td>
+                <form class="form-inline" style="margin:0">
+                  <button id="decrease-tempOffset-button" type="button">-</button>
+                  <input type="number" name="tempOffsetInput" min="0" max="999" class="input-small" style="width: 30px"
+                    placeholder="%NOZZLE_TEMPERATURE_OFFSET_SP%"></input>
+                  <span class="units">&degC</span>
+                  <button id="increase-tempOffset-button" type="button">+</button>
+                  <button id="submit-tempOffset-button" type="button">&#10003;</button>
+                </form>
+              </td>
+
+            </tr>
+            <tr>
+              <th><span class="auger-control-label">Diameter</span></th>
+              <td>
+                <form class="form-inline" style="margin:0">
+                  <button id="decrease-diameter-button" type="button">-</button>
+                  <input type="number" name="diameterInput" min="0" max="600" class="input-small" style="width: 30px"
+                    placeholder="%DIAMETER_SP%"></input>
+                  <span class="units">mm</span>
+                  <button id="increase-diameter-button" type="button">+</button>
+                  <button id="submit-diameter-button" type="button">&#10003;</button>
+                </form>
+              </td>
+              <td><span id="diameter">%DIAMETER%</span></td>
+              <td>
+                <form class="form-inline" style="margin:0">
+                  <button id="decrease-diameterOffset-button" type="button">-</button>
+                  <input type="number" name="diameterOffsetInput" min="0" max="600" class="input-small"
+                    style="width: 30px" placeholder="%DIAMETER_OFFSET_SP%"></input>
+                  <span class="units">mm</span>
+                  <button id="increase-diameterOffset-button" type="button">+</button>
+                  <button id="submit-diameterOffset-button" type="button">&#10003;</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        </p>
+      </div>
+    </div>
+    <!-- DROPDOWN FOR PRESETS -->
+    <div id="inner-column-left">
+      <button class="accordion"><strong>Material</strong></button>
+      <div class="panel">
+        <p>
+          <i class="fas fa-tape" style="color:#059e8a;"></i>
+          <label for="material">Select Material:</label>
+          <select name="material-dropdown" id="material-dropdown">
+            <option value="PLA">PLA</option>
+            <option value="PET">PET</option>
+            <option value="ABS">ABS</option>
+          </select>
+        </p>
+
+        <p>
+          <i class="fas fa-ruler-vertical" style="color:#059e8a;"></i>
+          <label for="diameter">Select Diameter:</label>
+          <select name="diameter-dropdown" id="diameter-dropdown">
+            <option value="thin">1.75 mm</option>
+            <option value="thick">2.85 mm</option>
+          </select>
+        </p>
+        <p>
+          <button id="preheat-button" class="button">Preheat</button>
+          <button id="cooldown-button" class="button">Cooldown</button>
+        </p>
+      </div>
+
+      <button class="accordion"><strong>Auger</strong></button>
+      <div class="panel">
+        <p>
+          <i class="fas fa-tachometer-alt" style="color:#059e8a;"></i>
+          <span class="auger-control-label">Set Auger Speed</span> <br><br>
+          <input class="enabled" id="auger-speed-slider" type="range" min="100" max="255" step="1"
+            oninput="sendAugerSpeed();" value="100">
+        </p>
+        <p>
+          <button id="auger-extrude-button" class="button">Extrude</button>
+          <button id="auger-stop-button" class="button">Stop</button>
+        </p>
+      </div>
+
+      <button class="accordion"><strong>Manual Control</strong></button>
+      <div class="panel">
+        <p>
+          <i class="fas fa-clock" style="color:#059e8a;"></i>
+          <label for="manualTime">Select Rotation Period:</label>
+          <select name="manual-dropdown" id="manual-dropdown">
+            <option value="3">3 Seconds</option>
+            <option value="5">5 Seconds</option>
+            <option value="10">10 Seconds</option>
+          </select>
+        </p>
+        <p>
+
+          <button id="auger-forward-button" class="button">Forward</button>
+          <button id="auger-reverse-button" class="button">Reverse</button>
+        </p>
+      </div>
+
+      <button class="accordion"><strong>Cooling</strong></button>
+      <div class="panel">
+        <p>
+          <i class="fas fa-tachometer-alt" style="color:#059e8a;"></i>
+          <span class="auger-control-label">Set Fan Speed</span> <br><br>
+          <input class="enabled" id="fan-speed-slider" type="range" min="100" max="255" step="1"
+            oninput="sendFanSpeed();" value="100">    
+          </p>      
+        <p>
+          <button id="fan-button" class="button">Stop</button>
+        </p>
+        
+      </div>
+    </div>
+
+      <!-- This are the divs we are rendering the charts to -->
+      <div id="inner-column-right">
+        <div id="tabpanel">
+          <ul role="tablist" id="tablist">
+            <li id="temperature-tab" role="tab" aria-controls="panel-1" aria-selected="true">Nozzle Temperature</li>
+            <li id="diameter-tab" role="tab" aria-controls="panel-2" aria-selected="false">Filament Diameter</li>
+          </ul>
+          <div id="tabcontent"></div>
+          <div id="panel-1" role="tabpanel" aria-labelledby="link1" aria-hidden="false">
+            <div id="chart-temperature" class="container"></div>
+          </div>
+          <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
+            <div id="chart-diameter" class="container"></div>
+          </div>
+
+          <!-- <div id="chart-pressure" class="container"></div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="right-column">
+    <p>
+
+    </p>
+  </div>
+</body>
+<script>
+  var chartT = new Highcharts.Chart({
+    chart: { renderTo: 'chart-temperature' },
+    title: { text: 'Nozzle Temperature' },
+    series: [{
+      name: 'IST',
+      color: '#059e8a',
+      data: []
+    },
+    {
+      name: 'SOLL',
+      data: []
+    }],
+    plotOptions: {
+      line: {
+        animation: true,
+        dataLabels: { enabled: false }
+      }
+    },
+    xAxis: {
+      type: 'datetime',
+      dateTimeLabelFormats: { second: '%H:%M:%S' }
+    },
+    yAxis: {
+      title: { text: 'Temperature (Celsius)' }
+      //title: { text: 'Temperature (Fahrenheit)' }
+    },
+    credits: { enabled: false }
+  });
+
+  var chartD = new Highcharts.Chart({
+    chart: { renderTo: 'chart-diameter' },
+    title: { text: 'Durchmesser' },
+    series: [{
+      name: 'IST',
+      color: '#059e8a',
+      data: []
+    },
+    {
+      name: 'SOLL',
+      data: []
+    }],
+    plotOptions: {
+      line: {
+        animation: false,
+        dataLabels: { enabled: true }
+      }
+    },
+    xAxis: {
+      type: 'datetime',
+      dateTimeLabelFormats: { second: '%H:%M:%S' }
+    },
+    yAxis: {
+      title: { text: 'Diameter (mm)' }
+      //title: { text: 'Temperature (Fahrenheit)' }
+    },
+    credits: { enabled: false }
+  });
+</script>
+
+</html>
