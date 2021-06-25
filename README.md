@@ -45,4 +45,7 @@ Parts needed:
 
 Coded in Arduino IDE - requirements:
 
-    - 
+    - #include <WiFi.h>
+    - #include <ESPAsyncWebServer.h>
+    - #include <SPIFFS.h>
+    - #include <ArduinoJson.h>
