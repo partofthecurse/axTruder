@@ -5,8 +5,9 @@ See Full instructions on daniel-strohbach.de/diy-filamentextruder-teil-1
 Concept:
 Shred your failed Prints and remelt the Plastic to new Filament. Inspired by the Lyman Extruder.
 
-Based on the ESP32-Webserver Work by FipsOK - https://fipsok.de/Esp32-Webserver/Esp32
-
+    -Based on the ESP32-Webserver Work by FipsOK - https://fipsok.de/Esp32-Webserver/Esp32
+    - Digital Caliper ReadOut based on Work of MGX3D - See https://github.com/MGX3D/EspDRO for Details
+    
 
 Features:
 
@@ -14,6 +15,21 @@ Features:
     - Filament Width Control via speed difference (WIP)
     - PID Heat Control (PID Tuning required individually)
     - Web Interface via Wifi
+    - using highcharts js to visualise temperature and diameter in graphs
+    - MQTT Data Logging (See MQTT Tab for Topics)
+    - Preheat Protection (do not rotate untill nozzle temp is reached)
+
+To Do
+   - PID Temperature Control testing and optimizing controller values
+   - mDNS
+   - captive Portal
+   - OTA Updates
+   - Wifi Multi
+   - thermal runaway protection
+   - integrate JSON better
+   - add support more Thermistors
+   - manual rotation time setting in ui
+   - speed presets in material dropdown
 
 Parts needed:
 
