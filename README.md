@@ -1,45 +1,32 @@
-# openWeather
-Open Source Weather Station that also looks quite nice.
+# axTruder
+Open Source Firmware for DIY Filament Extruder based on ESP32.
+See Full instructions on daniel-strohbach.de/diy-filamentextruder-teil-1
+
 Concept:
-We are requesting Temperature and Weather ID with an openWeatherMap API Call . Weather is Displayed through Neopixel LEDs under a PMMA-Screen with engraved Icons. Temperature is resembled with LED Colour.
+Shred your failed Prints and remelt the Plastic to new Filament. Inspired by the Lyman Extruder.
+
+Based on the ESP32-Webserver Work by FipsOK - https://fipsok.de/Esp32-Webserver/Esp32
+
+
+Features:
+
+    - Filament Sensor from hacked digital calipers (WIP)
+    - Filament Width Control via speed difference (WIP)
+    - PID Heat Control (PID Tuning required individually)
+    - Web Interface via Wifi
 
 Parts needed:
 
-    - ESP8266 or ESP32 Board, alternatively arduino nano with wifi shield will do as well but not coded here
-    - Optional: DHT22 or DHT11 Sensor to measure Indoor Temp and Humidity
-    - 4x WS2812 (aka NeoPixel) LED
+    - ESP32 Board
+    - PSU 12V DC 30A
+    - K-Type Thermistor WENT01
+    - MAX6675 SPI Converter
+    - SSR 25A 3-32V DC 24-380V AC (Suitable for inductive loads)
+    - Heaterband 230V 25x25cm
+    - L298N Motordriver
+    - 12V DC Gearmotor
+    - Various other Hardwareparts, as Screws, Pipes etc.
 
-Solder the 4 LEDs into a tiny LED Strip and connect to Dev Board:
+Coded in Arduino IDE - requirements:
 
-    Board LED   LED   LED   LED
-    3V3 - VCC - VCC - VCC - VCC
-    GND - GND - GND - GND - GND
-    D8 -  I/0 - I/O - I/O - I
-
-Connect DHT22 / DHT11 to
-
-    Board DHT
-    3V3 - +
-    GND - -
-    D4  - OUT
-
-Pixel-ID Icon reference (take care when assembling or switch in the code
-
-    0 - clear sky
-    1 - cloudy
-    2 - rainy
-    3 - snow
-
-Outdoortemperature & Colours:
-
-    > 30°C - Red
-    > 21°C - Warm yellow
-    < 18°C - Light blue
-    < 00°C - Blue
-    Thunderstorm: Yellow
-    Fog: White
-
-    Red: Wifi related error
-    green: connecting
-
-Optional: Send the measured DHT Data to an MQTT Broker
+    - 
